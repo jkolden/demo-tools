@@ -32,7 +32,7 @@ class Credentials extends Component {
 
     return (
       <ScrollView>
-      {Object.keys(this.props).map(key => (
+      {Object.keys(this.props.instances).map(key => (
 
         <TouchableOpacity key={key}>
                 <Card>
@@ -43,6 +43,8 @@ class Credentials extends Component {
 
 
         ))}
+
+      <Text>Currently Selected Instance: {JSON.stringify(this.props.selectedInstance)}</Text>
       </ScrollView>
       )
   }
@@ -53,5 +55,6 @@ function mapStateToProps(state) {
   return state
 
 }
+
 
 export default connect(mapStateToProps)(Credentials)

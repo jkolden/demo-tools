@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Button } from 'react-native'
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native'
 import { saveInstance } from '../utils/api'
 import { connect } from 'react-redux'
-import { addInstance } from '../actions'
+import { addInstance, selectInstance } from '../actions'
 
 class AddEntry extends Component {
 
@@ -18,8 +18,11 @@ class AddEntry extends Component {
       }
     }
 
+
+
     saveInstance(this.state.text, 'vsT7u8')
     .then(this.props.dispatch(addInstance(payload)))
+    .then(this.props.dispatch(selectInstance(this.state.text)))
 
     // Clear input
     this.setState({ text: "" });
@@ -27,12 +30,13 @@ class AddEntry extends Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
        <TextInput
             style={{ height: 40, fontSize: 20 }}
             placeholder="Enter Instance"
             onChangeText={text => this.setState({ text })}
             value={this.state.text}
+            autoCapitalize = 'none'
           />
 
           <Button
@@ -51,5 +55,14 @@ class AddEntry extends Component {
   }
 
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default connect()(AddEntry)

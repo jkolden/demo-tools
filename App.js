@@ -3,6 +3,9 @@ import { StyleSheet, Text, View } from 'react-native'
 import  Credentials from './components/Credentials'
 import AddEntry from './components/AddEntry'
 import BankStatements from './components/BankStatements'
+import BasePicker from './components/BasePicker'
+import MyHeader from './components/MyHeader'
+import { fetchStatements } from './actions'
 import {
   createBottomTabNavigator,
   createStackNavigator,
@@ -13,9 +16,17 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import { getInstances } from './utils/api'
 import { FontAwesome, Ionicons, EvilIcons, MaterialCommunityIcons } from '@expo/vector-icons'
+import { receiveInstances, selectInstance } from './actions'
 
 const Tabs = createBottomTabNavigator(
   {
+    SelectInstance: {
+      screen: BasePicker,
+      navigationOptions: {
+        tabBarLabel: 'Select Instance',
+        tabBarIcon: <EvilIcons name='check' size={20} />
+      },
+    },
     BankStatements: {
       screen: BankStatements,
       navigationOptions: {
@@ -26,24 +37,25 @@ const Tabs = createBottomTabNavigator(
     Credentials: {
       screen: Credentials,
       navigationOptions: {
-        tabBarLabel: 'Credentials',
+        tabBarLabel: 'Instances',
         tabBarIcon: <EvilIcons name='gear' size={20} />
       },
     },
     AddEntry: {
       screen: AddEntry,
       navigationOptions: {
-        tabBarLabel: 'Add Entry',
+        tabBarLabel: 'Add Instance',
         tabBarIcon: <EvilIcons name='plus' size={20} />
       },
     },
+
   },
   {
     navigationOptions: {
       header: null,
     },
     tabBarOptions: {
-      labelStyle: { fontSize: 20 },
+      labelStyle: { fontSize: 15 },
       activeTintColor: '#00000f',
 
       style: {
@@ -67,10 +79,22 @@ export default class App extends React.Component {
 
     const store = createStore(reducer, middleware)
 
+    getInstances()
+      .then((instances) => store.dispatch(receiveInstances(instances)))
+
+    store
+      .dispatch(fetchStatements('ucf1-fap0344'))
+      .then(() => console.log(store.getState()))
+
     return (
        <Provider store={store}>
-        <Tabs />
+
+
+       <Tabs />
+
+
        </Provider>
+
     );
   }
 }
